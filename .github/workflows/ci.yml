@@ -21,8 +21,10 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
+          components: rust-src, llvm-tools-preview
+      - name: Install bootimage
+        run: cargo install bootimage
       - name: Install dependencies
-        run: |
-          cargo build
+        run: cargo build
       - name: Run tests
         run: cargo test              
