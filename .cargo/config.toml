@@ -1,0 +1,28 @@
+[build]
+target = "bare-metal-target.json"
+
+[unstable]
+build-std-features = ["compiler-builtins-mem"]
+build-std = ["core", "compiler_builtins"]
+
+[target.'cfg(target_os = "none")']
+runner = "bootimage runner"
+
+# isso aqui é para compilar um binário freestading para o sistema host
+# é melhor compilar para um target bare metal já que precisamos fazer outras coisas além disso, como inicializar a stack.
+
+# não linka com a rotina de startup padrão do runtime C
+
+# [target.'cfg(target_os = "linux")']
+# rustflags = ["-C", "link-arg=-nostartfiles"]
+
+# [target.'cfg(target_os = "windows")']
+# rustflags = ["-C", "link-args=/ENTRY:_start /SUBSYSTEM:console"]
+# espera a entrada dependendo do subsystem utilizado. ao especificar /ENTRY precisamos especificar o subsistema tbm que pode ser por ex WINDOWS ou CONSOLE.
+
+# [target.'cfg(target_os = "macos")']
+# rustflags = ["-C", "link-args=-e __start -static -nostartfiles"]
+
+# nostartfiles é para não linkar com o crt0 (c runtime zero).
+# _ adicional no nome do entrypoint é pq no mac as funções começam com _.
+# -static é para linkar um binário estático e não linçar com a lib libSystem.

@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+      - name: Install QEMU
+        run: |
+          sudo apt-get update
+          sudo apt-get install qemu qemu-system-x86 qemu-utils
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+      - name: Install dependencies
+        run: |
+          cargo build
+      - name: Run tests
+        run: cargo test              
