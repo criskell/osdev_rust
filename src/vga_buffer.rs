@@ -89,9 +89,7 @@ impl Writer {
     pub fn write_string(&mut self, str: &str) {
         for byte in str.bytes() {
             match byte {
-                // caracter imprimivel
                 0x20..0x7e | b'\n' => self.write_byte(byte),
-                // caractere não imprimivel
                 _ => self.write_byte(0xfe),
             }
         }
@@ -143,4 +141,26 @@ macro_rules! println {
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
     WRITER.lock().write_fmt(args).unwrap();
+}
+
+#[test_case]
+fn test_println_simple() {
+    println!("test_println_simple output");
+}
+
+#[test_case]
+fn test_println_many() {
+    for _ in 0..200 {
+        println!("test_println_many output");
+    }
+}
+
+#[test_case]
+fn test_println_output() {
+    let s = "tatakae";
+    println!("{}", s);
+    for (i, c) in s.chars().enumerate() {
+        let screen_char = WRITER.lock().buffer.chars[BUFFER_HEIGHT - 2][i].read();
+        assert_eq!(char::from(screen_char.ascii_character), c);
+    }
 }
