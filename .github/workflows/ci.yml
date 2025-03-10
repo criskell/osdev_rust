@@ -16,7 +16,7 @@ jobs:
       - name: Install QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install qemu qemu-system-x86 qemu-utils
+          sudo apt-get install qemu-system-x86
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
