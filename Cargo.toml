@@ -35,4 +35,8 @@ test-timeout = 60           # 1 minute in seconds
 
 [[test]]
 name = "should_panic"
-harness = false # disable test runner from default and custom test framework.
+harness = false       # disable test runner from default and custom test framework.
+
+[[test]]
+name = "stack_overflow"
+harness = false
