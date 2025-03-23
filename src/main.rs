@@ -13,14 +13,12 @@ pub extern "C" fn _start() -> ! {
 
     osdev_rust::init();
 
-    x86_64::instructions::interrupts::int3();
-
     #[cfg(test)]
     test_main();
 
-    println!("It did not crash.................. AJJUAJAJAHJSHHHAHS");
+    println!("It did not crash!");
 
-    loop {}
+    osdev_rust::hlt_loop();
 }
 
 #[cfg(not(test))]
@@ -28,7 +26,7 @@ pub extern "C" fn _start() -> ! {
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
 
-    loop {}
+    osdev_rust::hlt_loop();
 }
 
 #[cfg(test)]
