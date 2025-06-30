@@ -20,8 +20,10 @@ jobs:
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly-1.88.0
-          components: rust-src, llvm-tools-preview
+          toolchain: nightly-2025-06-13
+          profile: minimal
+      - name: Install Rustup Components
+        run: rustup component add rust-src llvm-tools-preview
       - name: Install bootimage
         run: cargo install bootimage
       - name: Install dependencies
