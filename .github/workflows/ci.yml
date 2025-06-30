@@ -1,30 +1,43 @@
-name: CI
-
-on:
-  # push:
-  #   branches:
-  #     - main
-  workflow_dispatch:
-
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out the code
+      - name: Check out your kernel repo
         uses: actions/checkout@v2
+
+      - name: Clone Rust with patch
+        run: |
+          git clone https://github.com/rust-lang/rust.git rust-patched
+          cd rust-patched
+          git fetch origin pull/143075/head:pr-143075
+          git checkout pr-143075
+
+      - name: Install dependencies for building Rust
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl python3 cmake ninja-build
+
+      - name: Build patched Rust compiler (stage 1)
+        run: |
+          cd rust-patched
+          cp config.example.toml config.toml
+          ./x.py build --stage 1
+
+      - name: Add patched rustc to PATH
+        run: |
+          echo "$(pwd)/rust-patched/build/x86_64-unknown-linux-gnu/stage1/bin" >> $GITHUB_PATH
+
       - name: Install QEMU
         run: |
           sudo apt-get update
-          sudo apt-get install qemu-system-x86
-      - name: Set up Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly
-          components: rust-src, llvm-tools-preview
+          sudo apt-get install -y qemu-system-x86
+
       - name: Install bootimage
         run: cargo install bootimage
-      - name: Install dependencies
+
+      - name: Build your project
         run: cargo build
+
       - name: Run tests
-        run: cargo test              
+        run: cargo test
