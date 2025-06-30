@@ -16,9 +16,9 @@ jobs:
 
       - name: Clone Rust with patch
         run: |
-          git clone https://github.com/rust-lang/rust.git rust-patched
+          git clone --depth=1 https://github.com/rust-lang/rust.git rust-patched
           cd rust-patched
-          git fetch origin pull/143075/head:pr-143075
+          git fetch origin pull/143075/head:pr-143075 --depth=1
           git checkout pr-143075
 
       - name: Install dependencies for building Rust
