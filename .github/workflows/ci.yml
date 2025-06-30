@@ -20,7 +20,7 @@ jobs:
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly-2025-06-13
+          toolchain: nightly-1.88.0
           components: rust-src, llvm-tools-preview
       - name: Install bootimage
         run: cargo install bootimage
