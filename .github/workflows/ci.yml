@@ -20,7 +20,7 @@ jobs:
       - name: Set up Rust
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly-2025-06-13
+          toolchain: nightly-2025-06-13-x86_64-unknown-linux-gnu
           profile: minimal
       - name: Install Rustup Components
         run: rustup component add rust-src llvm-tools-preview
