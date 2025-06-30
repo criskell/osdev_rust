@@ -1,5 +1,3 @@
-#![feature(abi_custom)]
-
 use crate::{gdt, print, println};
 use lazy_static::lazy_static;
 use pc_keyboard::{DecodedKey, HandleControl, Keyboard, ScancodeSet1, layouts};
