@@ -5,12 +5,12 @@
 use core::panic::PanicInfo;
 use lazy_static::lazy_static;
 use osdev_rust::{
-    exit_qemu, gdt::DOUBLE_FAULT_IST_INDEX, serial_print, serial_println, test_panic_handler,
-    QemuExitCode,
+    QemuExitCode, exit_qemu, gdt::DOUBLE_FAULT_IST_INDEX, serial_print, serial_println,
+    test_panic_handler,
 };
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     serial_print!("stack_overflow::stack_overflow...\t");
 

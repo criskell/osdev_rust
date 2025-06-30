@@ -8,7 +8,7 @@ use core::panic::PanicInfo;
 
 use osdev_rust::println;
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     test_main();
 

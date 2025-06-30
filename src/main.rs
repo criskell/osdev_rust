@@ -4,16 +4,19 @@
 #![test_runner(osdev_rust::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+use alloc::{boxed::Box, rc::Rc, vec, vec::Vec};
 use bootloader::{BootInfo, entry_point};
 use core::panic::PanicInfo;
 use osdev_rust::println;
 
+extern crate alloc;
+
 entry_point!(kernel_main);
 
 fn kernel_main(boot_info: &'static BootInfo) -> ! {
-    use osdev_rust::memory;
-    use osdev_rust::memory::BootInfoFrameAllocator;
-    use x86_64::{VirtAddr, structures::paging::Page};
+    use osdev_rust::allocator;
+    use osdev_rust::memory::{self, BootInfoFrameAllocator};
+    use x86_64::VirtAddr;
 
     println!("Hello World!");
 
@@ -23,13 +26,30 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     let mut mapper = unsafe { memory::init(phys_mem_offset) };
     let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
 
-    let page = Page::containing_address(VirtAddr::new(0xdeadbeef000));
-    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+    allocator::init_heap(&mut mapper, &mut frame_allocator).expect("heap initialization failed");
 
-    let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    unsafe {
-        page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e);
+    let heap_value = Box::new(42);
+    println!("heap_value at {:p}", heap_value);
+
+    let mut vec = Vec::new();
+
+    for i in 0..500 {
+        vec.push(i);
     }
+
+    println!("vec at {:p}", vec.as_slice());
+
+    let reference_counted = Rc::new(vec![1, 2, 3]);
+    let cloned_reference = reference_counted.clone();
+    println!(
+        "current reference count: {}",
+        Rc::strong_count(&cloned_reference),
+    );
+    core::mem::drop(reference_counted);
+    println!(
+        "reference count is {} now",
+        Rc::strong_count(&cloned_reference)
+    );
 
     #[cfg(test)]
     test_main();
