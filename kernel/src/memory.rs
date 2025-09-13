@@ -1,6 +1,6 @@
 use core::panic;
 
-use bootloader::bootinfo::{MemoryMap, MemoryRegionType};
+use bootloader_api::bootinfo::{MemoryMap, MemoryRegionType};
 use x86_64::{
     PhysAddr, VirtAddr,
     structures::paging::{

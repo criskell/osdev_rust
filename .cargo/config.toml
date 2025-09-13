@@ -1,12 +1,11 @@
-[build]
-target = "bare-metal-target.json"
+# [build]
+# target = "x86_64-unknown-none"
 
 [unstable]
-build-std-features = ["compiler-builtins-mem"]
-build-std = ["core", "compiler_builtins", "alloc"]
+bindeps = true
 
-[target.'cfg(target_os = "none")']
-runner = "bootimage runner"
+# [target.'cfg(target_os = "none")']
+# runner = "bootimage runner"
 
 # isso aqui é para compilar um binário freestading para o sistema host
 # é melhor compilar para um target bare metal já que precisamos fazer outras coisas além disso, como inicializar a stack.
