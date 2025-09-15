@@ -10,11 +10,12 @@ use core::panic::PanicInfo;
 extern crate alloc;
 
 pub mod allocator;
+pub mod framebuffer;
 pub mod gdt;
 pub mod interrupts;
 pub mod memory;
 pub mod serial;
-pub mod vga_buffer;
+pub mod userspace;
 
 pub trait Testable {
     fn run(&self);
@@ -51,7 +52,7 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub fn init() {
     interrupts::init_idt();
     gdt::init();
-    unsafe { interrupts::PICS.lock().initialize() };
+    // unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
 }
 
