@@ -63,9 +63,13 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
         Rc::strong_count(&cloned_reference)
     );
 
+    #[cfg(not(test))]
     unsafe {
         userspace::jump_to_userspace(physical_memory_offset);
     }
+
+    #[cfg(test)]
+    test_main();
 
     kernel::hlt_loop();
 }
