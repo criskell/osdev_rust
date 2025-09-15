@@ -52,4 +52,3 @@ harness = false       # disable test runner from default and custom test framewo
 [[test]]
 name = "stack_overflow"
 harness = false
-

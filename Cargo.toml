@@ -14,5 +14,9 @@ ovmf-prebuilt = "0.1.0-alpha.1"
 members = ["kernel"]
 
 [profile.dev]
+panic="unwind"
 debug = true
 split-debuginfo = "unpacked"
+
+[profile.release]
+panic="abort"

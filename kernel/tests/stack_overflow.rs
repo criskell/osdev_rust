@@ -2,19 +2,19 @@
 #![no_main]
 #![feature(abi_x86_interrupt)]
 
-use core::panic::PanicInfo;
-use lazy_static::lazy_static;
-use osdev_rust::{
+use core::{panic::PanicInfo, ptr::NonNull};
+use kernel::{
     QemuExitCode, exit_qemu, gdt::DOUBLE_FAULT_IST_INDEX, serial_print, serial_println,
     test_panic_handler,
 };
+use lazy_static::lazy_static;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame};
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
     serial_print!("stack_overflow::stack_overflow...\t");
 
-    osdev_rust::gdt::init();
+    kernel::gdt::init();
     init_test_idt();
 
     stack_overflow();
@@ -41,7 +41,12 @@ fn stack_overflow() {
     // garante que o compilador não transforme a recursão em um loop.
     // devido a tail recursion optimizations.
     // isso quebraria o teste.
-    volatile::Volatile::new(0).read();
+    unsafe {
+        volatile::VolatilePtr::new(
+            NonNull::new(0 as *mut u8).expect("failed to create non-null ptr"),
+        )
+        .read();
+    }
 }
 
 lazy_static! {

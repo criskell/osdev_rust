@@ -17,9 +17,7 @@ extern crate alloc;
 
 pub static BOOTLOADER_CONFIG: BootloaderConfig = {
     let mut config = BootloaderConfig::new_default();
-    config.mappings.kernel_stack = Mapping::FixedAddress(0x10000000000);
     config.mappings.physical_memory = Some(Mapping::FixedAddress(0x20000000000));
-    config.kernel_stack_size = 80 * 1024;
     config
 };
 

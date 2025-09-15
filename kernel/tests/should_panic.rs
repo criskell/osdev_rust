@@ -5,7 +5,7 @@
 
 use core::panic::PanicInfo;
 
-use osdev_rust::{QemuExitCode, exit_qemu, serial_print, serial_println};
+use kernel::{QemuExitCode, exit_qemu, serial_print, serial_println};
 
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
