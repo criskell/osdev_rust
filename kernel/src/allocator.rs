@@ -8,9 +8,13 @@ use x86_64::{
     },
 };
 
-use crate::allocator::{bump::BumpAllocator, linked_list::LinkedListAllocator};
+use crate::allocator::{
+    bump::BumpAllocator, fixed_size_block::FixedSizeBlockAllocator,
+    linked_list::LinkedListAllocator,
+};
 
 pub mod bump;
+pub mod fixed_size_block;
 pub mod linked_list;
 
 pub const HEAP_START: usize = 0x_4444_4444_0000;
@@ -49,7 +53,7 @@ pub fn init_heap(
 }
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = Locked::new(LinkedListAllocator::new());
+static ALLOCATOR: LockedHeap = Locked::new(FixedSizeBlockAllocator::new());
 
 pub struct Dummy;
 
