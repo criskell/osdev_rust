@@ -77,7 +77,7 @@ pub unsafe fn jump_to_userspace(physical_memory_offset: VirtAddr) {
             "mov {tmp:r}, rsp",
             "push rdx", // SS (DS)
             "push {tmp:r}", // Current ESP
-            "pushfq", // EFLAGS
+            "pushf", // EFLAGS
             "push {code_selector:r}", // CS
             "push {user_code:r}", // EIP
             "iretq",

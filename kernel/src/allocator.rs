@@ -8,6 +8,11 @@ use x86_64::{
     },
 };
 
+use crate::allocator::{bump::BumpAllocator, linked_list::LinkedListAllocator};
+
+pub mod bump;
+pub mod linked_list;
+
 pub const HEAP_START: usize = 0x_4444_4444_0000;
 pub const HEAP_SIZE: usize = 100 * 1024; // 100 KiB
 
@@ -44,7 +49,7 @@ pub fn init_heap(
 }
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = LockedHeap::empty();
+static ALLOCATOR: LockedHeap = Locked::new(LinkedListAllocator::new());
 
 pub struct Dummy;
 
@@ -56,4 +61,43 @@ unsafe impl GlobalAlloc for Dummy {
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
         panic!("dealloc should be never called")
     }
+}
+
+pub struct Locked<A> {
+    inner: spin::Mutex<A>,
+}
+
+impl<A> Locked<A> {
+    pub const fn new(inner: A) -> Self {
+        Locked {
+            inner: spin::Mutex::new(inner),
+        }
+    }
+
+    pub fn lock(&self) -> spin::MutexGuard<A> {
+        self.inner.lock()
+    }
+}
+
+fn align_up_slow(addr: usize, align: usize) -> usize {
+    let remainder = addr % align;
+
+    if remainder == 0 {
+        addr
+    } else {
+        addr - remainder + align
+    }
+}
+
+/// Require that `align` is power of two.
+fn align_up(addr: usize, align: usize) -> usize {
+    // align é uma potência de dois, portanto tem apenas um único bit setado
+    // align - 1 deixa todos os bits menores desligados
+    // ! deixa todos os bits setados com exceção daqueles que são menores que align
+
+    // fazer um AND com um endereço e essa máscara, alinhamos o endereço para baixo, devido que
+    // desligamos todos os bits abaixo
+
+    // para fazer um alinhamento pra cima, somamos com align - 1 antes de aplicar a máscara.
+    (addr + align - 1) & !(align - 1)
 }
