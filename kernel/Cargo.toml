@@ -32,6 +32,23 @@ features = [
 version = "1.0"
 features = ["spin_no_std"]
 
+# Implements lock-free queues. Allows push without allocation via a fixed-size buffer.
+[dependencies.crossbeam-queue]
+version = "0.3.11"
+default-features = false
+features = ["alloc"]
+
+# Allows for safe, one-time initialization of static variables.
+[dependencies.conquer-once]
+version = "0.2.0"
+default-features = false
+
+# Contains the `Stream` type.
+[dependencies.futures-util]
+version = "0.3.4"
+default-features = false
+features = ["alloc"]
+
 [package.metadata.bootimage]
 test-args = [
     "-device",

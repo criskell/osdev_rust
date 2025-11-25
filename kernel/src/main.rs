@@ -11,7 +11,11 @@ use bootloader_api::{
     entry_point,
 };
 use core::panic::PanicInfo;
-use kernel::{framebuffer, println, userspace};
+use kernel::{
+    framebuffer, println,
+    task::{executor::Executor, keyboard},
+    userspace,
+};
 
 extern crate alloc;
 
@@ -62,14 +66,27 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     );
 
     #[cfg(not(test))]
+    #[cfg(userspace)]
     unsafe {
         userspace::jump_to_userspace(physical_memory_offset);
     }
 
+    let mut executor = Executor::new();
+    executor.spawn(Task::new(example_task()));
+    executor.spawn(Task::new(keyboard::print_keypresses()));
+    executor.run();
+
     #[cfg(test)]
     test_main();
+}
 
-    kernel::hlt_loop();
+async fn async_number() -> u32 {
+    42
+}
+
+async fn example_task() {
+    let number = async_number().await;
+    println!("async number: {}", number);
 }
 
 #[cfg(not(test))]
