@@ -14,7 +14,7 @@ use core::panic::PanicInfo;
 #[cfg(userspace)]
 use kernel::userspace;
 use kernel::{
-    framebuffer, hlt_loop, println,
+    framebuffer, println,
     task::{Task, executor::Executor, keyboard},
 };
 
@@ -76,8 +76,6 @@ fn kernel_main(boot_info: &'static mut BootInfo) -> ! {
     executor.spawn(Task::new(example_task()));
     executor.spawn(Task::new(keyboard::print_keypresses()));
     executor.run();
-
-    hlt_loop();
 
     #[cfg(test)]
     test_main();
