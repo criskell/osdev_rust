@@ -61,11 +61,11 @@ pub fn init() {
         // 0xFC = PIC1 and 0xFF = PIC2
         // Bit 1 means that IRQ is disabled. Bit 0 means that IRQ is enabled.
         //
-        // PIC1 (Master PIC) IRQs:
+        // PIC1 (Primary PIC) IRQs:
         //  * IRQ0: Timer (PIT)
         //  * IRQ1: PS/2 Keyboard
         //  * IRQ2: Cascade to PIC2
-        // PIC2 (Slave) IRQs:
+        // PIC2 (Secondary PIC) IRQs:
         //  * IRQ8: Real time clock
         //  * IRQ9: ACPI
         //
