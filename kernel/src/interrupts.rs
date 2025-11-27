@@ -4,9 +4,9 @@ use pic8259::ChainedPics;
 use spin::Mutex;
 use x86_64::structures::idt::{InterruptDescriptorTable, InterruptStackFrame, PageFaultErrorCode};
 
-// PIC primário
+/// Primary PIC
 pub const PIC_1_OFFSET: u8 = 32;
-// PIC secundário
+/// Secondary PIC
 pub const PIC_2_OFFSET: u8 = PIC_1_OFFSET + 8;
 
 pub static PICS: Mutex<ChainedPics> =
@@ -34,6 +34,7 @@ lazy_static! {
         let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
         idt.page_fault.set_handler_fn(page_fault_handler);
+
         unsafe {
             idt.double_fault
                 .set_handler_fn(double_fault_handler)
@@ -43,6 +44,7 @@ lazy_static! {
                 .set_handler_fn(generic_protection_fault_handler)
                 .set_stack_index(gdt::GENERIC_PROTECTION_FAULT_IST_INDEX);
         }
+
         idt[InterruptIndex::Timer.as_usize()].set_handler_fn(timer_interrupt_handler);
         idt[InterruptIndex::Keyboard.as_usize()].set_handler_fn(keyboard_interrupt_handler);
         idt

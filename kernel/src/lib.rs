@@ -53,7 +53,26 @@ pub fn test_panic_handler(info: &PanicInfo) -> ! {
 pub fn init() {
     interrupts::init_idt();
     gdt::init();
-    // unsafe { interrupts::PICS.lock().initialize() };
+    unsafe {
+        interrupts::PICS.lock().initialize();
+
+        // FIXME: Set up APIC.
+        // This is used for enabling timer and keyboard interrupts.
+        // 0xFC = PIC1 and 0xFF = PIC2
+        // Bit 1 means that IRQ is disabled. Bit 0 means that IRQ is enabled.
+        //
+        // PIC1 (Master PIC) IRQs:
+        //  * IRQ0: Timer (PIT)
+        //  * IRQ1: PS/2 Keyboard
+        //  * IRQ2: Cascade to PIC2
+        // PIC2 (Slave) IRQs:
+        //  * IRQ8: Real time clock
+        //  * IRQ9: ACPI
+        //
+        // 0xFC = 1111 1100 (Only IRQ0 and IRQ1 is enabled)
+        // 0xFF = 1111 1111 (All IRQs is disabled)
+        interrupts::PICS.lock().write_masks(0xFC, 0xFF);
+    };
     x86_64::instructions::interrupts::enable();
 }
 
