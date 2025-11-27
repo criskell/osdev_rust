@@ -1,5 +1,6 @@
-use super::{Layout, align_up};
-use core::alloc::{GlobalAlloc, Layout};
+use super::{Locked, align_up};
+use alloc::alloc::{GlobalAlloc, Layout};
+use core::ptr;
 
 pub struct BumpAllocator {
     heap_start: usize,
@@ -45,7 +46,7 @@ unsafe impl GlobalAlloc for Locked<BumpAllocator> {
     }
 
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: Layout) {
-        let bump = self.lock();
+        let mut bump = self.lock();
 
         bump.allocations -= 1;
 

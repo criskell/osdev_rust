@@ -14,6 +14,7 @@ fn main() {
         .create_disk_image(&bios_path)
         .unwrap();
 
+    println!("cargo::rustc-check-cfg=cfg(userspace)");
     println!("cargo:rustc-env=UEFI_PATH={}", uefi_path.display());
     println!("cargo:rustc-env=BIOS_PATH={}", bios_path.display());
 }

@@ -1,6 +1,5 @@
 use alloc::alloc::{GlobalAlloc, Layout};
 use core::ptr::null_mut;
-use linked_list_allocator::LockedHeap;
 use x86_64::{
     VirtAddr,
     structures::paging::{
@@ -8,10 +7,11 @@ use x86_64::{
     },
 };
 
-use crate::allocator::{
-    bump::BumpAllocator, fixed_size_block::FixedSizeBlockAllocator,
-    linked_list::LinkedListAllocator,
-};
+#[allow(unused_imports)]
+use crate::allocator::bump::BumpAllocator;
+use crate::allocator::fixed_size_block::FixedSizeBlockAllocator;
+#[allow(unused_imports)]
+use crate::allocator::linked_list::LinkedListAllocator;
 
 pub mod bump;
 pub mod fixed_size_block;
@@ -53,7 +53,7 @@ pub fn init_heap(
 }
 
 #[global_allocator]
-static ALLOCATOR: LockedHeap = Locked::new(FixedSizeBlockAllocator::new());
+static ALLOCATOR: Locked<FixedSizeBlockAllocator> = Locked::new(FixedSizeBlockAllocator::new());
 
 pub struct Dummy;
 
@@ -83,6 +83,7 @@ impl<A> Locked<A> {
     }
 }
 
+#[allow(dead_code)]
 fn align_up_slow(addr: usize, align: usize) -> usize {
     let remainder = addr % align;
 

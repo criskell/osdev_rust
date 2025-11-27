@@ -1,5 +1,6 @@
-use super::align_up;
-use core::mem;
+use super::{Locked, align_up};
+use alloc::alloc::{GlobalAlloc, Layout};
+use core::{mem, ptr};
 
 struct ListNode {
     size: usize,
@@ -69,7 +70,7 @@ impl LinkedListAllocator {
         None
     }
 
-    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<(usize, ())> {
+    fn alloc_from_region(region: &ListNode, size: usize, align: usize) -> Result<usize, ()> {
         let alloc_start = align_up(region.start_addr(), align);
         let alloc_end = alloc_start.checked_add(size).ok_or(())?;
 

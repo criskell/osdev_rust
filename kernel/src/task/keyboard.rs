@@ -1,14 +1,14 @@
-// Allows for the single initialization of static variables.
-use conquer_once::spin::OnceCell;
-
-// Allows for a fixed-size queue without locks.
-use crossbeam_queue::ArrayQueue;
-use futures_util::stream::StreamExt;
+use conquer_once::spin::OnceCell; // Allows for the single initialization of static variables.
+use core::{
+    pin::Pin,
+    task::{Context, Poll},
+};
+use crossbeam_queue::ArrayQueue; // Allows for a fixed-size queue without locks.
+use futures_util::stream::{Stream, StreamExt};
 use futures_util::task::AtomicWaker;
 use pc_keyboard::{DecodedKey, HandleControl, Keyboard, ScancodeSet1, layouts};
-use pc_keyboard::{DecodedKey, HandleControl, ScancodeSet1, layouts};
 
-use crate::{println, task::keyboard};
+use crate::{print, println};
 
 // We use `OnceCell` because `ArrayQueue::new` performs heap allocation, which is not allowed with static variables.
 // We don't use `lazy-static` because we need to ensure predictable queue initialization.

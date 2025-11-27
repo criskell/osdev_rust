@@ -1,6 +1,7 @@
 use alloc::boxed::Box;
 use core::sync::atomic::{AtomicU64, Ordering};
-use core::{future::future, pin::Pin};
+use core::task::{Context, Poll};
+use core::{future::Future, pin::Pin};
 
 pub mod executor;
 pub mod keyboard;
@@ -36,7 +37,7 @@ impl Task {
     pub fn new(future: impl Future<Output = ()> + 'static) -> Task {
         Task {
             id: TaskId::new(),
-            future: Box::spin(future),
+            future: Box::pin(future),
         }
     }
 

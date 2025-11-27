@@ -11,10 +11,11 @@ use bootloader_api::{
     entry_point,
 };
 use core::panic::PanicInfo;
+#[cfg(userspace)]
+use kernel::userspace;
 use kernel::{
     framebuffer, println,
-    task::{executor::Executor, keyboard},
-    userspace,
+    task::{Task, executor::Executor, keyboard},
 };
 
 extern crate alloc;

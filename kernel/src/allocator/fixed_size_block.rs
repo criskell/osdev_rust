@@ -1,5 +1,9 @@
 use super::Locked;
-use core::alloc::{GlobalAlloc, Layout};
+use alloc::alloc::{GlobalAlloc, Layout};
+use core::{
+    mem,
+    ptr::{self, NonNull},
+};
 
 /// Fixed size block allocator
 ///
@@ -40,7 +44,7 @@ impl FixedSizeBlockAllocator {
     fn fallback_alloc(&mut self, layout: Layout) -> *mut u8 {
         match self.fallback_allocator.allocate_first_fit(layout) {
             Ok(ptr) => ptr.as_ptr(),
-            Err(_) => ptr::null_ptr(),
+            Err(_) => ptr::null_mut(),
         }
     }
 }
