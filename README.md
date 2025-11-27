@@ -1,6 +1,6 @@
 # osdev_rust
 
-A toy operating system developed in Rust for hobby and study purposes. The main idea is to work using existing crates, such as `linked_list_allocator`, to later create my own solutions in the areas I am studying. This allows me to evolve within a controlled environment, supported by ready-made tools while conducting experiments.
+A toy operating system developed in Rust for hobby and study purposes. The main idea is to work using existing crates, such as `linked_list_allocator`, to later create my own solutions in the areas I am studying. This allows me to evolve within a controlled environment, supported by ready-made tools while conducting experiments. To improve my studies, I try to extensively document several lines of code using my own words, increasing my active study practice.
 
 ## How to test
 
