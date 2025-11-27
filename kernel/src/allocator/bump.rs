@@ -21,7 +21,8 @@ impl BumpAllocator {
 
     pub unsafe fn init(&mut self, heap_start: usize, heap_size: usize) {
         self.heap_start = heap_start;
-        self.heap_end = heap_start + heap_size;
+        // Avoid overflow and thus prevent UB in Rust. If the sum exceeds usize::MAX, it saturates to the maximum.
+        self.heap_end = heap_start.saturating_add(heap_size);
         self.next = heap_start;
     }
 }
